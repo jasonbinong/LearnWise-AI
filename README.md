@@ -4,6 +4,14 @@
 
 LearnWise AI is an academic resource optimization platform for UMBC students that helps them decide which study resources will help them most right now. Instead of only generating content, it ranks study actions by expected impact, time required, urgency, learning preference, course subject, and topic weakness.
 
+## Live Demo
+
+[Open LearnWise AI](https://jasonbinong.github.io/LearnWise-AI/)
+
+## What It Does
+
+LearnWise AI acts like a decision-support tool for studying. A student enters course context, available study time, topic weakness, academic urgency, and preferred learning style, then receives ranked recommendations designed to make limited study time more effective.
+
 ## Features
 
 - Personalized study resource recommendations
@@ -32,6 +40,13 @@ Students often have access to lecture slides, textbook chapters, videos, tutorin
 - CSS
 - JavaScript
 - Browser localStorage
+
+## What This Project Shows
+
+- Recommendation logic for academic planning
+- Student-centered information systems design
+- Data-driven prioritization using urgency, time, preference, and impact
+- Frontend product design for education technology
 
 ## Future Improvements
 
