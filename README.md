@@ -48,6 +48,34 @@ Students often have access to lecture slides, textbook chapters, videos, tutorin
 - Data-driven prioritization using urgency, time, preference, and impact
 - Frontend product design for education technology
 
+## Case Study
+
+### Problem
+
+Students often have access to many academic resources, including lectures, tutoring, office hours, videos, practice problems, writing support, and textbook chapters. The challenge is deciding which resource will help most when time is limited.
+
+### Solution
+
+LearnWise AI ranks study resources based on course context, weak topics, current grade, time available, deadline pressure, learning style, study goal, and resource access. Instead of giving generic study advice, it recommends the highest-impact actions for the student's situation.
+
+### Key Design Decisions
+
+- Starts with a blank study profile so the recommendations are based on the user's actual course and goals
+- Supports UMBC-style courses and broad subject categories
+- Scores resources by ROI per hour, urgency, topic match, learning preference, and expected academic impact
+- Includes a feedback loop that updates the learner profile locally after resource ratings
+
+### What I Learned
+
+This project helped me practice recommendation logic, user-centered design, and academic decision support. It also showed me how information systems can help students choose between competing resources, not just store course information.
+
+### Future Improvements
+
+- Add user accounts and saved semester plans
+- Store resource and course data in SQL
+- Connect to real tutoring, writing center, and office-hour schedules
+- Add analytics for topic mastery and resource effectiveness
+
 ## Future Improvements
 
 - Add user accounts
