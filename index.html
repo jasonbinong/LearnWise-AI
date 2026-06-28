@@ -49,29 +49,30 @@
 
           <label id="customCourseLabel" class="hidden">
             UMBC course code
-            <input id="customCourse" name="customCourse" type="text" value="CMSC 201" maxlength="12">
+            <input id="customCourse" name="customCourse" type="text" placeholder="CMSC 201" maxlength="12">
             <span class="helper-text">Type any UMBC-style course code, such as CMSC 201, BIOL 302, IS 147, or ENGL 101.</span>
           </label>
 
           <div class="field-grid">
             <label>
               Current grade
-              <input id="grade" name="grade" type="number" min="0" max="100" value="78">
+              <input id="grade" name="grade" type="number" min="0" max="100" placeholder="78">
             </label>
             <label>
               Exam in days
-              <input id="days" name="days" type="number" min="1" max="30" value="5">
+              <input id="days" name="days" type="number" min="1" max="30" placeholder="5">
             </label>
           </div>
 
           <div class="field-grid">
             <label>
               Study hours available
-              <input id="hours" name="hours" type="number" min="1" max="40" value="10">
+              <input id="hours" name="hours" type="number" min="1" max="40" placeholder="10">
             </label>
             <label>
               Preferred style
               <select id="style" name="style">
+                <option value="">Select style</option>
                 <option value="visual">Videos and examples</option>
                 <option value="practice">Hands-on practice</option>
                 <option value="reading">Reading and notes</option>
@@ -84,6 +85,7 @@
             <label>
               Study goal
               <select id="goal" name="goal">
+                <option value="">Select goal</option>
                 <option value="exam">Prepare for an exam</option>
                 <option value="assignment">Finish an assignment</option>
                 <option value="catchup">Catch up after falling behind</option>
@@ -93,6 +95,7 @@
             <label>
               Resource access
               <select id="access" name="access">
+                <option value="">Select access</option>
                 <option value="any">Any resource</option>
                 <option value="online">Online only</option>
                 <option value="campus">Campus support preferred</option>
@@ -148,6 +151,6 @@
       </section>
     </main>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
   </body>
 </html>

@@ -14,6 +14,8 @@ const coursePresets = {
   "CUSTOM": "Custom UMBC course code"
 };
 
+const PROFILE_KEY = "learnwiseProfileV2";
+
 const subjectTemplates = {
   AAST: ["identity", "history", "culture", "policy", "research methods", "essay writing"],
   AGNG: ["aging policy", "health systems", "case studies", "ethics", "program planning", "research"],
@@ -128,6 +130,7 @@ function initializeCourses() {
     .sort()
     .map(code => [`SUBJECT:${code}`, `${code} - Any ${code} course`]);
   const options = [
+    ["", "Select course or subject"],
     ...Object.entries(coursePresets),
     ...subjectOptions
   ];
@@ -138,20 +141,24 @@ function initializeCourses() {
 }
 
 function getProfile() {
-  const saved = localStorage.getItem("learnwiseProfile");
+  const saved = localStorage.getItem(PROFILE_KEY);
   return saved ? JSON.parse(saved) : structuredClone(defaultProfile);
 }
 
 function saveProfile(profile) {
-  localStorage.setItem("learnwiseProfile", JSON.stringify(profile));
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
 }
 
 function renderTopics() {
+  if (!els.course.value) {
+    els.topicList.innerHTML = `<div class="empty-state">Select a course or subject to choose weak topics.</div>`;
+    return;
+  }
   const topics = getCourseTopics();
   els.topicList.innerHTML = topics.map((topic, index) => `
     <label>
       <span>${capitalize(topic)}</span>
-      <input type="checkbox" value="${topic}" ${index < 2 ? "checked" : ""}>
+      <input type="checkbox" value="${topic}">
     </label>
   `).join("");
 }
@@ -161,9 +168,9 @@ function getInputs() {
   return {
     course: courseCode,
     subject: getSubjectCode(courseCode),
-    grade: Number(els.grade.value),
-    days: Number(els.days.value),
-    hours: Number(els.hours.value),
+    grade: Number(els.grade.value || 0),
+    days: Number(els.days.value || 0),
+    hours: Number(els.hours.value || 0),
     style: els.style.value,
     goal: els.goal.value,
     access: els.access.value,
@@ -172,16 +179,18 @@ function getInputs() {
 }
 
 function getSelectedCourseCode() {
+  if (!els.course.value) return "";
   if (els.course.value === "CUSTOM") return normalizeCourseCode(els.customCourse.value);
   if (els.course.value.startsWith("SUBJECT:")) return els.course.value.replace("SUBJECT:", "");
   return els.course.value;
 }
 
 function normalizeCourseCode(value) {
-  return value.trim().replace(/\s+/g, " ").toUpperCase() || "UMBC 000";
+  return value.trim().replace(/\s+/g, " ").toUpperCase();
 }
 
 function getSubjectCode(courseCode) {
+  if (!courseCode) return "";
   return courseCode.split(" ")[0].replace(/[^A-Z]/g, "");
 }
 
@@ -293,6 +302,10 @@ function calculateRisk(inputs, plan) {
 
 function renderResults() {
   const inputs = getInputs();
+  if (!isReadyToOptimize(inputs)) {
+    renderEmptyState();
+    return;
+  }
   const ranked = rankResources(inputs);
   const { plan, usedHours } = buildPlan(ranked, inputs);
   const risk = calculateRisk(inputs, plan);
@@ -335,6 +348,45 @@ function renderResults() {
   renderTable(ranked);
   renderFeedback(plan);
   renderProfile();
+}
+
+function isReadyToOptimize(inputs) {
+  return Boolean(
+    inputs.course &&
+    inputs.grade > 0 &&
+    inputs.days > 0 &&
+    inputs.hours > 0 &&
+    inputs.style &&
+    inputs.goal &&
+    inputs.access &&
+    inputs.weakTopics.length
+  );
+}
+
+function renderEmptyState() {
+  state.ranked = [];
+  state.selectedTopics = [];
+  els.resourceCount.textContent = "0";
+  els.roiPreview.textContent = "0.0";
+  els.riskPreview.textContent = "Not set";
+  els.riskPreview.className = "";
+  els.confidenceBadge.textContent = "Select inputs";
+  els.confidenceBadge.className = "badge";
+  els.summaryCards.innerHTML = [
+    { value: "1", label: "choose a course or subject" },
+    { value: "2", label: "enter grade, deadline, and hours" },
+    { value: "3", label: "select weak topics" },
+    { value: "4", label: "optimize resources" }
+  ].map(card => `
+    <article class="summary-card">
+      <strong>${card.value}</strong>
+      <span>${card.label}</span>
+    </article>
+  `).join("");
+  els.planOutput.innerHTML = `<div class="empty-state">Your highest-impact study plan will appear after you complete the study profile.</div>`;
+  els.table.innerHTML = `<div class="empty-state">No resources ranked yet.</div>`;
+  els.feedback.innerHTML = `<div class="empty-state">Feedback controls appear after recommendations are generated.</div>`;
+  els.profile.innerHTML = `<strong>Learner profile:</strong> No ratings saved for this version yet.`;
 }
 
 function summarizeFocus(inputs, plan) {
@@ -439,20 +491,24 @@ els.form.addEventListener("input", event => {
 
 els.form.addEventListener("submit", event => {
   event.preventDefault();
+  if (!isReadyToOptimize(getInputs())) {
+    window.alert("Complete the course, study details, style, goal, access, and at least one weak topic first.");
+    return;
+  }
   renderResults();
 });
 
 els.reset.addEventListener("click", () => {
-  localStorage.removeItem("learnwiseProfile");
-  els.course.value = "CMSC 201";
-  els.customCourse.value = "CMSC 201";
+  localStorage.removeItem(PROFILE_KEY);
+  els.course.value = "";
+  els.customCourse.value = "";
   els.customCourseLabel.classList.add("hidden");
-  els.grade.value = 78;
-  els.days.value = 5;
-  els.hours.value = 10;
-  els.style.value = "visual";
-  els.goal.value = "exam";
-  els.access.value = "any";
+  els.grade.value = "";
+  els.days.value = "";
+  els.hours.value = "";
+  els.style.value = "";
+  els.goal.value = "";
+  els.access.value = "";
   renderTopics();
   renderResults();
 });
