@@ -1,16 +1,16 @@
-# LearnWise AI
+# LearnWise
 
-![LearnWise AI thumbnail](thumbnail.png)
+![LearnWise thumbnail](thumbnail.png)
 
-LearnWise AI is an academic resource optimization platform for UMBC students that helps them decide which study resources will help them most right now. Instead of only generating content, it ranks study actions by expected impact, time required, urgency, learning preference, course subject, and topic weakness.
+LearnWise is an academic resource optimization platform for UMBC students that helps them decide which study resources will help them most right now. Instead of only generating content, it ranks study actions by expected impact, time required, urgency, learning preference, course subject, and topic weakness.
 
 ## Live Demo
 
-[Open LearnWise AI](https://jasonbinong.github.io/LearnWise-AI/)
+[Open LearnWise](https://jasonbinong.github.io/LearnWise-AI/)
 
 ## What It Does
 
-LearnWise AI acts like a decision-support tool for studying. A student enters course context, available study time, topic weakness, academic urgency, and preferred learning style, then receives ranked recommendations designed to make limited study time more effective.
+LearnWise acts like a decision-support tool for studying. A student enters course context, available study time, topic weakness, academic urgency, and preferred learning style, then receives ranked recommendations designed to make limited study time more effective.
 
 ## Features
 
@@ -32,7 +32,7 @@ No installation is required.
 
 ## Project Goal
 
-Students often have access to lecture slides, textbook chapters, videos, tutoring, office hours, writing support, library resources, and practice problems, but they do not know which option gives the best return on limited study time. LearnWise AI works as a decision-support system that recommends the highest-value academic resources for each situation.
+Students often have access to lecture slides, textbook chapters, videos, tutoring, office hours, writing support, library resources, and practice problems, but they do not know which option gives the best return on limited study time. LearnWise works as a decision-support system that recommends the highest-value academic resources for each situation.
 
 ## Tech Stack
 
@@ -56,7 +56,7 @@ Students often have access to many academic resources, including lectures, tutor
 
 ### Solution
 
-LearnWise AI ranks study resources based on course context, weak topics, current grade, time available, deadline pressure, learning style, study goal, and resource access. Instead of giving generic study advice, it recommends the highest-impact actions for the student's situation.
+LearnWise ranks study resources based on course context, weak topics, current grade, time available, deadline pressure, learning style, study goal, and resource access. Instead of giving generic study advice, it recommends the highest-impact actions for the student's situation.
 
 ### Key Design Decisions
 
