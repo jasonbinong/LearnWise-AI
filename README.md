@@ -6,7 +6,7 @@ LearnWise is an academic resource optimization platform for UMBC students that h
 
 ## Live Demo
 
-[Open LearnWise](https://jasonbinong.github.io/LearnWise-AI/)
+[Open LearnWise](https://jasonbinong.github.io/LearnWise/)
 
 ## What It Does
 
