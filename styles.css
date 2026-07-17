@@ -144,6 +144,13 @@ h2 {
   margin-bottom: 18px;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 label,
 legend {
   display: grid;
@@ -264,11 +271,54 @@ fieldset {
   margin-bottom: 16px;
 }
 
+.strategy-brief {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
 .summary-card {
   padding: 14px;
   background: #f7f9fb;
   border: 1px solid #e6ebf0;
   border-radius: 8px;
+}
+
+.brief-card {
+  min-height: 142px;
+  padding: 14px;
+  background: linear-gradient(180deg, #ffffff, #f8fbfb);
+  border: 1px solid #dce9e7;
+  border-left: 4px solid var(--teal);
+  border-radius: 8px;
+}
+
+.brief-card:nth-child(2) {
+  border-left-color: var(--blue);
+}
+
+.brief-card:nth-child(3) {
+  border-left-color: var(--amber);
+}
+
+.brief-card:nth-child(4) {
+  border-left-color: var(--ink);
+}
+
+.brief-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.brief-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .summary-card strong {
@@ -285,6 +335,69 @@ fieldset {
 .plan-output {
   display: grid;
   gap: 10px;
+}
+
+.schedule-output {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.schedule-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.schedule-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.schedule-header > span {
+  padding: 8px 10px;
+  color: #0d4b45;
+  background: #dff6f2;
+  border-radius: 999px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.schedule-card {
+  min-height: 136px;
+  padding: 14px;
+  background: #f7f9fb;
+  border: 1px solid #e6ebf0;
+  border-radius: 8px;
+}
+
+.schedule-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.schedule-card strong {
+  display: block;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.schedule-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 .plan-step {
@@ -418,7 +531,9 @@ fieldset {
   }
 
   .hero-stats,
-  .summary-grid {
+  .summary-grid,
+  .strategy-brief,
+  .schedule-grid {
     grid-template-columns: 1fr;
   }
 
@@ -445,8 +560,15 @@ fieldset {
 
   .field-grid,
   .plan-step,
-  .feedback-card {
+  .feedback-card,
+  .schedule-header {
     grid-template-columns: 1fr;
+  }
+
+  .panel-header,
+  .result-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .roi-pill {

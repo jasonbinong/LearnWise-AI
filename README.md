@@ -20,6 +20,9 @@ LearnWise acts like a decision-support tool for studying. A student enters cours
 - Resource effectiveness scoring
 - Academic ROI per hour calculation
 - Course success risk estimate
+- Strategy brief explaining why the top plan works
+- Deadline-aware study schedule based on available days and hours
+- Copyable and downloadable study plan export
 - Study goal and resource access filters
 - Feedback loop that updates learner preferences in the browser
 - GitHub Pages-ready static web app
@@ -63,6 +66,8 @@ LearnWise ranks study resources based on course context, weak topics, current gr
 - Starts with a blank study profile so the recommendations are based on the user's actual course and goals
 - Supports UMBC-style courses and broad subject categories
 - Scores resources by ROI per hour, urgency, topic match, learning preference, and expected academic impact
+- Turns the ranked output into an actionable strategy brief and schedule so students know exactly what to do next
+- Exports a plain-text study plan that can be saved, shared, or pasted into a calendar/task manager
 - Includes a feedback loop that updates the learner profile locally after resource ratings
 
 ### What I Learned
@@ -75,6 +80,7 @@ This project helped me practice recommendation logic, user-centered design, and 
 - Store resource and course data in SQL
 - Connect to real tutoring, writing center, and office-hour schedules
 - Add analytics for topic mastery and resource effectiveness
+- Add calendar export for study sessions
 
 ## Future Improvements
 

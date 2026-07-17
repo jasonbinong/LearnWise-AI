@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnWise</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=3">
   </head>
   <body>
     <main class="shell">
@@ -118,11 +118,17 @@
               <p class="eyebrow">Recommendation engine</p>
               <h2>Highest-impact plan</h2>
             </div>
-            <span id="confidenceBadge" class="badge">Ready</span>
+            <div class="result-actions">
+              <span id="confidenceBadge" class="badge">Ready</span>
+              <button type="button" id="copyPlanButton" class="ghost-button">Copy Plan</button>
+              <button type="button" id="downloadPlanButton" class="ghost-button">Download</button>
+            </div>
           </div>
 
           <div id="summaryCards" class="summary-grid"></div>
+          <div id="strategyBrief" class="strategy-brief"></div>
           <div id="planOutput" class="plan-output"></div>
+          <div id="scheduleOutput" class="schedule-output"></div>
         </section>
       </section>
 
@@ -151,6 +157,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=3"></script>
   </body>
 </html>

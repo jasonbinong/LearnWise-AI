@@ -114,11 +114,15 @@ const els = {
   access: document.querySelector("#access"),
   topicList: document.querySelector("#topicList"),
   summaryCards: document.querySelector("#summaryCards"),
+  strategyBrief: document.querySelector("#strategyBrief"),
   planOutput: document.querySelector("#planOutput"),
+  scheduleOutput: document.querySelector("#scheduleOutput"),
   table: document.querySelector("#resourceTable"),
   feedback: document.querySelector("#feedbackControls"),
   profile: document.querySelector("#learnerProfile"),
   reset: document.querySelector("#resetButton"),
+  copyPlan: document.querySelector("#copyPlanButton"),
+  downloadPlan: document.querySelector("#downloadPlanButton"),
   resourceCount: document.querySelector("#resourceCount"),
   roiPreview: document.querySelector("#roiPreview"),
   riskPreview: document.querySelector("#riskPreview"),
@@ -322,6 +326,7 @@ function renderResults() {
 
   const projectedGain = plan.reduce((sum, item) => sum + item.expectedGain, 0).toFixed(1);
   const planFocus = summarizeFocus(inputs, plan);
+  const planSummary = buildPlanSummary(inputs, plan, risk, usedHours, projectedGain);
   els.summaryCards.innerHTML = [
     { value: `${usedHours}h`, label: `${inputs.hours} hours available` },
     { value: `+${projectedGain}`, label: "estimated grade impact" },
@@ -334,6 +339,8 @@ function renderResults() {
     </article>
   `).join("");
 
+  renderStrategyBrief(inputs, plan, risk, planSummary);
+
   els.planOutput.innerHTML = plan.map((item, index) => `
     <article class="plan-step">
       <span class="rank">${index + 1}</span>
@@ -345,6 +352,7 @@ function renderResults() {
     </article>
   `).join("");
 
+  renderSchedule(inputs, plan);
   renderTable(ranked);
   renderFeedback(plan);
   renderProfile();
@@ -383,10 +391,108 @@ function renderEmptyState() {
       <span>${card.label}</span>
     </article>
   `).join("");
+  els.strategyBrief.innerHTML = emptyState("Complete the study profile to generate a strategy brief.");
   els.planOutput.innerHTML = `<div class="empty-state">Your highest-impact study plan will appear after you complete the study profile.</div>`;
+  els.scheduleOutput.innerHTML = emptyState("A deadline-aware schedule will appear with your optimized plan.");
   els.table.innerHTML = `<div class="empty-state">No resources ranked yet.</div>`;
   els.feedback.innerHTML = `<div class="empty-state">Feedback controls appear after recommendations are generated.</div>`;
   els.profile.innerHTML = `<strong>Learner profile:</strong> No ratings saved for this version yet.`;
+}
+
+function buildPlanSummary(inputs, plan, risk, usedHours, projectedGain) {
+  const topics = inputs.weakTopics.map(capitalize).join(", ");
+  const strongestResource = plan[0]?.title || "No resource selected";
+  const riskAdvice = risk.label === "High"
+    ? "Use campus support early and reduce the number of topics you try to cover at once."
+    : risk.label === "Medium"
+      ? "Focus on the first two recommendations before adding extra review."
+      : "Keep the plan focused and use feedback ratings to improve future recommendations.";
+  return {
+    course: inputs.course,
+    topics,
+    strongestResource,
+    riskAdvice,
+    usedHours,
+    projectedGain
+  };
+}
+
+function renderStrategyBrief(inputs, plan, risk, summary) {
+  const top = plan[0];
+  const second = plan[1];
+  const cards = [
+    {
+      title: "Start Here",
+      body: top
+        ? `${top.title} should come first because it gives the strongest ROI for ${summary.topics || "your selected topics"}.`
+        : "Complete the form to generate a first action."
+    },
+    {
+      title: "Why This Works",
+      body: `The plan balances urgency, weak topics, learning preference, available time, and ${formatGoal(inputs.goal)} goals.`
+    },
+    {
+      title: "Watch Risk",
+      body: `${risk.label} risk at ${risk.value}%. ${summary.riskAdvice}`
+    },
+    {
+      title: "Backup Move",
+      body: second
+        ? `If you get stuck, switch to ${second.title.toLowerCase()} before spending more time on low-impact review.`
+        : "Add more available hours or select another weak topic to create a backup action."
+    }
+  ];
+
+  els.strategyBrief.innerHTML = cards.map(card => `
+    <article class="brief-card">
+      <span>${card.title}</span>
+      <p>${card.body}</p>
+    </article>
+  `).join("");
+}
+
+function renderSchedule(inputs, plan) {
+  if (!plan.length) {
+    els.scheduleOutput.innerHTML = emptyState("A deadline-aware schedule will appear with your optimized plan.");
+    return;
+  }
+  const schedule = buildSchedule(inputs, plan);
+  els.scheduleOutput.innerHTML = `
+    <div class="schedule-header">
+      <div>
+        <p class="eyebrow">Study schedule</p>
+        <h3>${inputs.days <= 3 ? "Emergency sprint" : inputs.days <= 7 ? "Focused week plan" : "Steady prep plan"}</h3>
+      </div>
+      <span>${schedule.reduce((sum, item) => sum + item.hours, 0).toFixed(1)}h planned</span>
+    </div>
+    <div class="schedule-grid">
+      ${schedule.map(item => `
+        <article class="schedule-card">
+          <span>${item.label}</span>
+          <strong>${item.title}</strong>
+          <p>${item.hours}h - ${item.note}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function buildSchedule(inputs, plan) {
+  const labels = inputs.days <= 3
+    ? ["Today", "Tonight", "Tomorrow", "Final review", "Before deadline"]
+    : inputs.days <= 7
+      ? ["Day 1", "Day 2", "Day 3", "Day 4", "Final review"]
+      : ["This week", "Next session", "Midpoint", "Follow-up", "Final review"];
+  return plan.map((item, index) => ({
+    label: labels[index] || `Step ${index + 1}`,
+    title: item.title,
+    hours: item.hours,
+    note: index === 0
+      ? "highest ROI action"
+      : item.access === "campus"
+        ? "schedule this ahead"
+        : "use after the first action"
+  }));
 }
 
 function summarizeFocus(inputs, plan) {
@@ -447,6 +553,67 @@ function renderProfile() {
     <strong>Learner profile:</strong> strongest signal is <strong>${capitalize(bestStyle[0])}</strong>
     (${bestStyle[1].toFixed(2)}x effectiveness). ${count} rating${count === 1 ? "" : "s"} saved locally.
   `;
+}
+
+function buildExportText() {
+  const inputs = getInputs();
+  if (!state.ranked.length || !isReadyToOptimize(inputs)) return "";
+  const { plan, usedHours } = buildPlan(state.ranked, inputs);
+  const risk = calculateRisk(inputs, plan);
+  const projectedGain = plan.reduce((sum, item) => sum + item.expectedGain, 0).toFixed(1);
+  const schedule = buildSchedule(inputs, plan);
+  return [
+    "LearnWise Study Plan",
+    `Course: ${inputs.course}`,
+    `Weak topics: ${inputs.weakTopics.map(capitalize).join(", ")}`,
+    `Current grade: ${inputs.grade}%`,
+    `Deadline: ${inputs.days} day(s)`,
+    `Hours available: ${inputs.hours}`,
+    `Planned hours: ${usedHours}`,
+    `Estimated grade impact: +${projectedGain}`,
+    `Risk: ${risk.label} (${risk.value}%)`,
+    "",
+    "Recommended actions:",
+    ...plan.map((item, index) => `${index + 1}. ${item.title} - ${item.hours}h - ROI ${item.roi}/hr - ${explainRecommendation(item, inputs)}`),
+    "",
+    "Schedule:",
+    ...schedule.map((item, index) => `${index + 1}. ${item.label}: ${item.title} (${item.hours}h) - ${item.note}`)
+  ].join("\n");
+}
+
+async function copyPlan() {
+  const text = buildExportText();
+  if (!text) {
+    window.alert("Generate a study plan first.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    els.copyPlan.textContent = "Copied";
+    setTimeout(() => {
+      els.copyPlan.textContent = "Copy Plan";
+    }, 1200);
+  } catch {
+    els.copyPlan.textContent = "Copy Failed";
+  }
+}
+
+function downloadPlan() {
+  const text = buildExportText();
+  if (!text) {
+    window.alert("Generate a study plan first.");
+    return;
+  }
+  const blob = new Blob([text], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `learnwise-${getSelectedCourseCode() || "study"}-plan.txt`.toLowerCase().replace(/\s+/g, "-");
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function emptyState(message) {
+  return `<div class="empty-state">${message}</div>`;
 }
 
 function saveRating(button) {
@@ -512,6 +679,9 @@ els.reset.addEventListener("click", () => {
   renderTopics();
   renderResults();
 });
+
+els.copyPlan.addEventListener("click", copyPlan);
+els.downloadPlan.addEventListener("click", downloadPlan);
 
 els.feedback.addEventListener("click", event => {
   if (event.target.matches("button[data-title]")) saveRating(event.target);
