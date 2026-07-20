@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnWise</title>
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=4">
   </head>
   <body>
     <main class="shell">
@@ -154,9 +154,21 @@
           <div id="feedbackControls" class="feedback-controls"></div>
           <div id="learnerProfile" class="profile-box"></div>
         </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Plan history</p>
+              <h2>Saved study plans</h2>
+            </div>
+            <button type="button" id="savePlanButton" class="ghost-button">Save Plan</button>
+          </div>
+          <p class="muted">Keep a short local history of study plans so you can compare how your risk and focus changed over time.</p>
+          <div id="planHistory" class="history-list"></div>
+        </section>
       </section>
     </main>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
   </body>
 </html>

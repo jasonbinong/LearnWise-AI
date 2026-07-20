@@ -22,6 +22,7 @@ LearnWise acts like a decision-support tool for studying. A student enters cours
 - Course success risk estimate
 - Strategy brief explaining why the top plan works
 - Deadline-aware study schedule based on available days and hours
+- Saved local study-plan history for comparing course risk, planned hours, topics, and first action over time
 - Copyable and downloadable study plan export
 - Study goal and resource access filters
 - Feedback loop that updates learner preferences in the browser
@@ -67,6 +68,7 @@ LearnWise ranks study resources based on course context, weak topics, current gr
 - Supports UMBC-style courses and broad subject categories
 - Scores resources by ROI per hour, urgency, topic match, learning preference, and expected academic impact
 - Turns the ranked output into an actionable strategy brief and schedule so students know exactly what to do next
+- Saves recent plans locally so students can compare how their study strategy changes across courses and deadlines
 - Exports a plain-text study plan that can be saved, shared, or pasted into a calendar/task manager
 - Includes a feedback loop that updates the learner profile locally after resource ratings
 

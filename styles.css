@@ -125,7 +125,7 @@ h2 {
 }
 
 .lower-grid {
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1.1fr 0.8fr 0.8fr;
 }
 
 .panel {
@@ -500,6 +500,36 @@ fieldset {
   border-radius: 8px;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.history-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.history-card {
+  padding: 13px;
+  background: #f7f9fb;
+  border: 1px solid #e6ebf0;
+  border-radius: 8px;
+}
+
+.history-card strong,
+.history-card span {
+  display: block;
+}
+
+.history-card span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.history-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .empty-state {

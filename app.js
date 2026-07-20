@@ -15,6 +15,7 @@ const coursePresets = {
 };
 
 const PROFILE_KEY = "learnwiseProfileV2";
+const HISTORY_KEY = "learnwisePlanHistoryV1";
 
 const subjectTemplates = {
   AAST: ["identity", "history", "culture", "policy", "research methods", "essay writing"],
@@ -98,7 +99,8 @@ const defaultProfile = {
 
 const state = {
   ranked: [],
-  selectedTopics: []
+  selectedTopics: [],
+  lastPlan: null
 };
 
 const els = {
@@ -123,6 +125,8 @@ const els = {
   reset: document.querySelector("#resetButton"),
   copyPlan: document.querySelector("#copyPlanButton"),
   downloadPlan: document.querySelector("#downloadPlanButton"),
+  savePlan: document.querySelector("#savePlanButton"),
+  planHistory: document.querySelector("#planHistory"),
   resourceCount: document.querySelector("#resourceCount"),
   roiPreview: document.querySelector("#roiPreview"),
   riskPreview: document.querySelector("#riskPreview"),
@@ -327,6 +331,17 @@ function renderResults() {
   const projectedGain = plan.reduce((sum, item) => sum + item.expectedGain, 0).toFixed(1);
   const planFocus = summarizeFocus(inputs, plan);
   const planSummary = buildPlanSummary(inputs, plan, risk, usedHours, projectedGain);
+  state.lastPlan = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    course: inputs.course,
+    topics: inputs.weakTopics.map(capitalize),
+    risk: risk.label,
+    riskValue: risk.value,
+    hours: usedHours,
+    impact: projectedGain,
+    firstAction: plan[0]?.title || "No action"
+  };
   els.summaryCards.innerHTML = [
     { value: `${usedHours}h`, label: `${inputs.hours} hours available` },
     { value: `+${projectedGain}`, label: "estimated grade impact" },
@@ -356,6 +371,7 @@ function renderResults() {
   renderTable(ranked);
   renderFeedback(plan);
   renderProfile();
+  renderPlanHistory();
 }
 
 function isReadyToOptimize(inputs) {
@@ -397,6 +413,8 @@ function renderEmptyState() {
   els.table.innerHTML = `<div class="empty-state">No resources ranked yet.</div>`;
   els.feedback.innerHTML = `<div class="empty-state">Feedback controls appear after recommendations are generated.</div>`;
   els.profile.innerHTML = `<strong>Learner profile:</strong> No ratings saved for this version yet.`;
+  state.lastPlan = null;
+  renderPlanHistory();
 }
 
 function buildPlanSummary(inputs, plan, risk, usedHours, projectedGain) {
@@ -612,6 +630,42 @@ function downloadPlan() {
   URL.revokeObjectURL(link.href);
 }
 
+function getPlanHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function savePlanToHistory() {
+  if (!state.lastPlan) {
+    window.alert("Generate a study plan first.");
+    return;
+  }
+  const history = [state.lastPlan, ...getPlanHistory().filter(item => item.id !== state.lastPlan.id)].slice(0, 6);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderPlanHistory();
+}
+
+function renderPlanHistory() {
+  const history = getPlanHistory();
+  if (!els.planHistory) return;
+  if (!history.length) {
+    els.planHistory.innerHTML = emptyState("Saved plans will appear here after you generate and save a strategy.");
+    return;
+  }
+  els.planHistory.innerHTML = history.map(item => `
+    <article class="history-card">
+      <div>
+        <strong>${item.course}</strong>
+        <span>${new Date(item.date).toLocaleDateString()} - ${item.risk} risk - ${item.hours}h planned</span>
+      </div>
+      <p>${item.firstAction} (${item.topics.slice(0, 3).join(", ") || "general review"})</p>
+    </article>
+  `).join("");
+}
+
 function emptyState(message) {
   return `<div class="empty-state">${message}</div>`;
 }
@@ -682,6 +736,7 @@ els.reset.addEventListener("click", () => {
 
 els.copyPlan.addEventListener("click", copyPlan);
 els.downloadPlan.addEventListener("click", downloadPlan);
+els.savePlan.addEventListener("click", savePlanToHistory);
 
 els.feedback.addEventListener("click", event => {
   if (event.target.matches("button[data-title]")) saveRating(event.target);
